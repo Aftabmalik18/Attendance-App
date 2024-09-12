@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance System</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        h1 {
+            text-align: center;
+            color: #ff6f61;
+            font-size: 2.5rem;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        select, button {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 2px solid #ff6f61;
+            font-size: 1rem;
+            background-color: #fff7f0;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #ffcccb;
+        }
+        select:focus, button:focus {
+            outline: none;
+            border-color: #ffb347;
+        }
+        .students {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .student {
+            padding: 12px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 10px;
+            background-color: #ffe4e1;
+            color: #333;
+            font-size: 1.1rem;
+            text-align: center;
+            width: 120px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .student:hover {
+            transform: scale(1.1);
+        }
+        .student.green {
+            background-color: #90ee90;
+            color: white;
+        }
+        .student.red {
+            background-color: #ff6f61;
+            color: white;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        .back-button, .submit-button {
+            width: 48%;
+            background-color: #ffb347;
+            border: 2px solid #ffb347;
+            color: white;
+        }
+        .back-button:hover, .submit-button:hover {
+            background-color: #ff6f61;
+            border-color: #ff6f61;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🎓 Student Attendance 📝</h1>
+        <select id="classSelect">
+            <option value="">🔽 Select Class</option>
+            <option value="class3">Class 3 👧</option>
+            <option value="class4">Class 4 👦</option>
+            <option value="class5">Class 5 👩</option>
+            <option value="class6">Class 6 👨</option>
+            <option value="class7">Class 7 👱</option>
+            <option value="class8">Class 8 👧</option>
+        </select>
+
+        <div id="studentsContainer" class="students"></div>
+
+        <div class="buttons">
+            <button class="submit-button" onclick="submitAttendance()">✅ Submit</button>
+            <button class="back-button" onclick="goBack()">🔙 Back</button>
+        </div>
+    </div>
+
+    <script>
+        const students = {
+            class3: [
+                "🧸 Abhiraj Prashant Suryawanshi", "🐱 Abila Habib Khan", "🚀 Ahemad Ali Mohammad Altaf Lulaniya",
+                "🍎 Ajinkya Rahul Jondhale", "🎨 Akshara Arjun Gangthare", "🦄 Anurag Ashish Jondhale",
+                "🐶 Anvaya Kapil Shiradkar", "🌈 Anzar Mohammad Amjad Shaikh", "🍉 Arav Arvind Gajbhar",
+                "🎈 Arav Sudhakar Jamdade", "🍪 Arnesh Dinesh Bharne", "🐢 Arohi Kailas Khandare", 
+                "🍓 Avishakar Ajay Katke", "🚗 Ayesha Zafar Khan", "🎵 Ayush Govind Badad", 
+                "🧸 Dishanya Sandeep Jondhale", "🎤 Haziq Majid Shaikh", "🍕 Kunal Siddharth Ghodke", 
+                "🎸 Marya Maryam Sk. Sameer Hussain", "🎮 Nandini Kailash Harale", "🏖 Priyal Rajesh Manwate", 
+                "⚽ Rajnandini Vishal Awachar", "📖 Ritesh Devidas Latpate", "🏀 Rutvij Pradeep Sugandhe", 
+                "🎹 Samrat Manoj Kamble", "🧩 Sejal Satish More", "🍔 Shareque Khan Ajmal Khan", 
+                "🐢 Shravani Sukdhadey Dhongde", "🎧 Shreyash Vishwanath Ambhure", "🏓 Shrusti Hanmant Sasane", 
+                "🎮 Snehal Sanjay Suryawanshi", "🏄‍♂️ Somya Amol Dhadve", "📱 Syed Affan Syed Asef", 
+                "🎮 Vivan Amol Panditkar"
+            ],
+            class4: [
+                "🍎 Aaroh Mahesh Rode", "🐱 Abdul Rehman Abdul Aziz", "🚀 Abdulla Akhil Ahmed", 
+                "🍓 Aditi Rajesh Gaikwad", "🎨 Ajinkya Milind Ghusale", "🎈 Anushka Ashok Ranveer", 
+                "🌈 Arhant Tushar Awasarmal", "🍉 Arvind Gulabrao Sawant", "🎵 Ashita Arvind Gajbhar", 
+                "🧸 Ayush Dilip Malsaminder", "🎤 Bouddhik Rajratan Shiradkar", "🍔 Muhammad Hashir Abdulla", 
+                "📖 Pranav Umesh Sonawane", "⚽ Prasenjeet Ganesh Ubale", "🏀 Pratap Prakash Walke", 
+                "🎧 Pratik Pramod Munde", "🎮 Pruthviraj Punjaji Parve", "🧩 Rashi Kailash Ubale", 
+                "🎹 Rutuja Tushar Narwade", "🏖 Sakshi Dulbaji Suryawanshi", "🎸 Sandisha Siddharth Sawant", 
+                "🍕 Shweta Harishchandra Waghmare", "📱 Siddharth Milind Pradhan", "🎮 Swara Sanjeev Jadhav", 
+                "🧸 Swara Tulshiram Kashinde", "🏓 Syed Ibrahim Syed Ather", "🍔 Syed Maaz Syed Imran", 
+                "🎮 Syed Muzammil Asif Inamder", "⚾ Syed Taha Syed Jameel Ahmed Hashmi", "🎓 Tanishka Gajanan Waghmare", 
+                "🎨 Vedant Nitin Ingole", "📖 Viraj Arvind Vitthalkar"
+            ],
+            class5: [
+                "🎤 Aarohi Subhash Dhabale", "🍕 Adiyan Amjad Khan", "🚀 Anas Mohasin Shaikh", 
+                "🍉 Aryan Rahul Vairat", "🍓 Bankar Kranti Vitthal", "🎨 Darsh Prasanna Kate", 
+                "🎧 Dhairya Rupesh Wahule", "🎮 Dipke Sarthak Rajaram", "⚽ Hanwate Utkarsh Prasannajit", 
+                "🏀 Kagda Aditya Jogindarsingh", "🎵 Khan Alishba Habib", "🍔 Kurhade Dhiraj Yogeshwar", 
+                "📖 Kurhade Niraj Yogeshwar", "🎮 Mohammad Afif Mohammad Aslam", "🧩 Mohammad Amanuddin Kazi", 
+                "🎧 Mohammad Farhanuddin Kazi", "🏓 Mundhe Ansh Aniket", "🎤 Patange Swaraj Sachin", 
+                "🎧 Salve Aarohi Raju", "🎮 Salve Naman Gautam", "📱 Sanchi Ganesh Kharat", 
+                "🎹 Shaikh Amaan Shaikh Zahed", "🍕 Shaikh Iram", "🎵 Shaikh Zara Fatema Shaikh Hameed", 
+                "🏖 Shravani Shankar Shinde", "🎧 Swara Ganesh Kharat", "🎮 Tak Ishita Rahul", 
+                "🏀 Tareq Khan Ajmal Khan Pathan", "🎤 Zainab Sarwari"
+            ],
+            class6: [
+                "🧸 Abdul Nafey Abdul Tahseen", "🍎 Akib Moin Altaf Lulaniya", "🎤 Alane Sharvari Vivek", 
+                "🎮 Arbaz Rafiq Kazi", "📱 Aryan Subhash Dhabale", "🎨 Ashraf Abdul Tahseen", 
+                "🎵 Hanwate Pranjali Dilip", "🎧 Hashim Mohammad Ali Shaikh", "🎹 Iqbal Abdul Aziz", 
+                "🎤 Khan Isha Mohsin", "🍕 Kurhade Vinayak Anil", "🎮 Lakhare Mangesh Dinesh", 
+                "📖 Makandar Amanuddin Khurshid", "⚽ Mohammad Samad Altaf Lulaniya", "🏓 Mohammad Shoaib Khan Abdul Munaf", 
+                "🎸 Qadri Amaan Sk. Kaleem", "🎮 Qadri Firdous", "📱 Salve Pranjal Narendra", 
+                "🎧 Shaikh Anis", "🍔 Shaikh Suha Fatema", "🎤 Syed Talha", "🍎 Syed Taha Abdul Aziz", 
+                "🎹 Tasneem Saba Khan Abdul Waheed", "⚾ Yusuf Khan Asif"
+            ],
+            class7: [
+                "🧸 Ahmed Siddiqui", "🎧 Akshat Waman More", "🍎 Anas Shaikh", 
+                "🎵 Faiz Ahmed", "🎮 Hamid Khan Abdul", "🎹 Hafsa Fatema Shaikh", 
+                "🍉 Junaid Altaf Lulaniya", "🎤 Kashan Shaikh", "🍕 Mahima Ravindra Ubale", 
+                "🎮 Manish Walke", "🎧 Rehan Abdul", "🎸 Sejal Amol Suryawanshi", 
+                "🎨 Shaikh Faiza", "🏖 Siddharth Syed", "🎮 Sufiyan Aslam"
+            ],
+            class8: [
+                "🎤 Afzal Khan", "🎵 Akshay Pratap Awasarmal", "🍔 Ayesha Naaz", 
+                "🎮 Dhairya Sonavane", "🍉 Iqra Fatema", "🎸 Muskan Shaikh", 
+                "🎨 Nimra Ahmed", "🎤 Saniya Shaikh", "🏖 Syed Adil Ahmed"
+            ]
+        };
+
+        document.getElementById("classSelect").addEventListener("change", function () {
+            const classSelected = this.value;
+            const studentsContainer = document.getElementById("studentsContainer");
+            studentsContainer.innerHTML = "";
+
+            if (classSelected && students[classSelected]) {
+                students[classSelected].forEach(function (student) {
+                    const studentDiv = document.createElement("div");
+                    studentDiv.classList.add("student");
+                    studentDiv.innerText = student;
+                    studentDiv.addEventListener("click", toggleAttendance);
+                    studentsContainer.appendChild(studentDiv);
+                });
+            }
+        });
+
+        function toggleAttendance() {
+            if (this.classList.contains("green")) {
+                this.classList.remove("green");
+                this.classList.add("red");
+            } else if (this.classList.contains("red")) {
+                this.classList.remove("red");
+            } else {
+                this.classList.add("green");
+            }
+        }
+
+        function submitAttendance() {
+            const attendance = [];
+            document.querySelectorAll(".student").forEach(function (studentDiv) {
+                const studentName = studentDiv.innerText;
+                let status = "";
+                if (studentDiv.classList.contains("green")) {
+                    status = "Present";
+                } else if (studentDiv.classList.contains("red")) {
+                    status = "Absent";
+                } else {
+                    status = "Not Marked";
+                }
+                attendance.push({ student: studentName, status: status });
+            });
+            console.log("Attendance Submitted:", attendance);
+            alert("Attendance Submitted! 🎉");
+        }
+
+        function goBack() {
+            document.getElementById("classSelect").value = "";
+            document.getElementById("studentsContainer").innerHTML = "";
+        }
+   
+    </script>
+</body>
+</html>
